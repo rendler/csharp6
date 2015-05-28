@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>CSharp6</title>
+    <link rel="stylesheet" type="text/css" href="build/build.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  </head>
+  <body>
+    <article>
+      <section>
+        <h1>C# 6</h1>
+        <p class="small">Mark Rendle | @markrendle<br>blog.markrendle.net | zudio.co</p>
+        <p>&nbsp;</p>
+        <p class="small">(Imagine this is the #devsum15 template)</p>
+      </section>
+      <section>
+        <h2>History</h2>
+        <ul class="bullet">
+          <li>C# 2 : Generics</li>
+          <li>C# 3 : LINQ</li>
+          <li>C# 4 : Dynamic</li>
+          <li>C# 5 : Async</li>
+        </ul>
+      </section>
+      <section>
+        <h1>The C# 6 Theme?</h1>
+      </section>
+      <section data-bespoke-backdrop="sugar">
+        <h2>Syntactic Sugar</h2>
+      </section>
+      <section>
+        <h2>Overview</h2>
+        <ul class="bullet">
+          <li>Roslyn</li>
+          <li>Strings</li>
+          <li>Nulls</li>
+          <li>Properties &amp; Methods</li>
+          <li>Initializers</li>
+          <li>Exceptions</li>
+          <li>Static</li>
+        </ul>
+      </section>
+      <section>
+        <h1>Roslyn</h1>
+      </section>
+      <section>
+        <h2>Roslyn</h2>
+        <ul class="bullet">
+          <li>Open-source
+            <ul>
+              <li>Apache 2.0</li>
+              <li>github.com/dotnet/roslyn</li>
+            </ul>
+          </li>
+          <li>"Self-hosted"</li>
+          <li>Language Services APIs</li>
+        </ul>
+      </section>
+      <section>
+        <h1>Strings</h1>
+      </section>
+      <section>
+        <h3>String.Format()</h3>
+      </section>
+      <section>
+        <pre><code class="language-csharp">log.Error(string.Format("Exception: '{0}'", ex.Message));
+</code></pre>
+      </section>
+      <section>
+        <h3>"String Interpolation"</h3>
+      </section>
+      <section>
+        <pre><code class="language-csharp">log.Error($"Exception: '{ex.Message}'");
+</code></pre>
+      </section>
+      <section>
+        <h3>"Magic Strings"</h3>
+      </section>
+      <section>
+        <pre><code class="language-csharp">void Save(Drink drink)
+{
+  if (drink == null)
+  {
+    throw new ArgumentNullException("drink");
+  }
+}
+</code></pre>
+      </section>
+      <section>
+        <h3>nameof(identifier)</h3>
+      </section>
+      <section>
+        <pre><code class="language-csharp">void Save(Drink drink)
+{
+  if (drink == null)
+  {
+    throw new ArgumentNullException(nameof(drink));
+  }
+}
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="language-csharp">// Useful in reflection code, too:
+
+typeof(Client).GetMethod(nameof(Client.Send));
+
+</code></pre>
+      </section>
+      <section>
+        <h1>Nulls</h1>
+      </section>
+      <section>
+        <pre><code class="language-csharp">var grenade = explosive as Grenade;
+if (grenade != null)
+{
+  grenade.RemovePin();
+}
+explosive.ThrowAtMime();
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="language-csharp">(explosive as Grenade)?.RemovePin();
+explosive.ThrowAtMime();
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="language-csharp">protected void OnBlownUp(int pieces)
+{
+  var handler = BlownUp;
+  if (handler != null)
+    {
+      handler(this, new BlownUpEventArgs(pieces));
+    }
+}
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="language-csharp">protected void OnBlownUp(int pieces)
+{
+  BlownUp?.Invoke(this, new BlownUpEventArgs(pieces));
+}
+</code></pre>
+      </section>
+      <section>
+        <h1>Properties</h1>
+      </section>
+      <section>
+        <h2>Automatic Properties</h2>
+        <pre><code class="language-csharp">public bool IsAlive { get; set; }
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="language-csharp">public class Mime
+{
+  public Mime()
+  {
+    IsAlive = true;
+  }
+  
+  public bool IsAlive { get; set; }
+}
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="language-csharp">// Automatic Property initializers
+public class Mime
+{
+  public bool IsAlive { get; set; } = true;
+}
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="language-csharp">// Getter-only automatic properties
+public class Mime
+{
+  public bool IsAnnoying { get; } = true;
+}
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="language-csharp">public class Mime
+{
+  public bool IsAnnoying { get { return true; } }
+}
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="language-csharp">// Set get-only properties in ctor
+public class Juggler
+{
+  public Juggler(int balls)
+  {
+    Balls = balls;
+  }
+  
+  public int Balls { get; }
+}
+</code></pre>
+      </section>
+      <section>
+        <h2>Expression Bodied Properties</h2>
+      </section>
+      <section>
+        <pre><code class="language-csharp">// Expression as get-only property
+public class StiltWalker
+{
+  public float TotalHeight =&gt; height + stilts.Height;
+}
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="language-csharp">// Also works on indexer properties
+public class Arsenal
+{
+  public Weapon this[WeaponClass wc] =&gt; inventory.GetWeapon(wc);
+}
+</code></pre>
+      </section>
+      <section>
+        <h1>Methods</h1>
+      </section>
+      <section>
+        <h2>Expression Bodied Methods</h2>
+      </section>
+      <section>
+        <pre><code class="language-csharp">public int Explode(int power)
+{
+  pieces = Math.Random(power);
+  return pieces;
+}
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="language-csharp">// Single-line. Very F#.
+public int Explode(int power) =&gt; this.pieces = Math.Random(power);
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="language-csharp">protected void OnBlownUp(int pieces) =&gt; BlownUp.Invoke(this, new BlownUpEventArgs(pieces));
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="language-csharp">// Use on operator overrides too
+public static implicit operator PathString(string path) =&gt;
+  new PathString(path);
+  </code></pre>
+      </section>
+      <section>
+        <h1>Initializers</h1>
+      </section>
+      <section>
+        <pre><code class="language-csharp">// Dictionary initializer in C# 5
+var weapons = new Dictionary&lt;WeaponClass, Weapon&gt;
+  {
+    { WeaponClass.Pistol, new NerfGun() },
+    { WeaponClass.Melee, new PointyStick() }
+  };
+  </code></pre>
+      </section>
+      <section>
+        <pre><code class="language-csharp">// Actually compiles to
+var weapons = new Dictionary&lt;WeaponClass, Weapon&gt;();
+weapons.Add(WeaponClass.Pistol, new NerfGun());
+weapons.Add(WeaponClass.Melee, new PointyStick());
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="language-csharp">// Meanwhile, in the Dictionary class
+public class Dictionary&lt;TKey, TValue&lt; : IEnumerable
+{
+  public void Add(TKey key, TValue value)
+  {
+    // Magic happens here
+  }
+}
+</code></pre>
+      </section>
+      <section>
+        <h2>Index Initializers</h2>
+      </section>
+      <section>
+        <pre><code class="language-csharp">// Index initializer in C# 6
+var weapons = new Dictionary&lt;WeaponClass, Weapon&gt;
+  {
+    [WeaponClass.Pistol] = new NerfGun(),
+    [WeaponClass.Melee] = new PointyStick()
+  };
+  </code></pre>
+      </section>
+      <section>
+        <pre><code class="language-csharp">// Actually compiles to
+var weapons = new Dictionary&lt;WeaponClass, Weapon&gt;();
+weapons[WeaponClass.Pistol] = new NerfGun();
+weapons[WeaponClass.Melee] = new PointyStick();
+</code></pre>
+      </section>
+      <section>
+        <h3>(BTW, collection initializers now work with Add extension methods)</h3>
+      </section>
+      <section>
+        <h1>Static</h1>
+      </section>
+      <section>
+        <pre><code class="language-csharp">using System;
+
+public class Program
+{
+  public static void Main()
+  {
+    Console.WriteLine("Hello, Neo...");
+  }
+}
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="language-csharp">using static System.Console;
+
+public class Program
+{
+  public static void Main()
+  {
+    WriteLine("Hello, Neo...");
+  }
+}
+</code></pre>
+      </section>
+      <section>
+        <pre class="small"><code class="language-csharp">// More expressive libraries
+using static BDD.Methods;
+
+public class Program
+{
+  public static void Main()
+  {
+    // Jasmine-style Describe/It
+    Describe("Life, The Universe &amp; Everything", () =gt; {
+      It("should have a meaning", () =&gt; {
+        Expect(6 * 9).ToEqual(42);
+      });
+    });
+  }
+}
+</code></pre>
+      </section>
+      <section>
+        <h1>Exceptions</h1>
+      </section>
+      <section>
+        <h2>Async/Await</h2>
+      </section>
+      <section>
+        <pre class="small"><code class="language-csharp">try
+{
+  await game.Loop();
+}
+catch (GameException ex)
+{
+  await Log(ex);
+}
+finally
+{
+  await VSync();
+}
+</code></pre>
+      </section>
+      <section>
+        <h2>Exception Filters</h2>
+      </section>
+      <section>
+        <pre class="small"><code class="language-csharp">try
+{
+  client.Send(request);
+}
+catch (HttpResponseException) when ex.StatusCode &gt; 499
+{
+  throw;
+}
+catch (HttpResponseException)
+{
+  retries = retries - 1;
+}
+</code></pre>
+      </section>
+      <section>
+        <h1>C# 7</h1>
+      </section>
+      <section>
+        <h3>Top Five Features</h3>
+        <ul>
+          <li>Pattern matching</li>
+          <li>Proper Tuples</li>
+          <li>Records / algebraic data types</li>
+          <li>Nullability tracking</li>
+          <li>Async interators</li>
+        </ul>
+      </section>
+      <section>
+        <h3>More C# 7</h3>
+        <p class="small">https://github.com/dotnet/roslyn/issues/2136</p>
+      </section>
+      <section>
+        <h1>Fin</h1>
+      </section>
+    </article>
+    <script src="build/build.js"></script>
+  </body>
+</html>
