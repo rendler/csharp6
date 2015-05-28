@@ -1,0 +1,435 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1')
+    title CSharp6
+
+    link(rel='stylesheet', type='text/css', href='build/build.css')
+    link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css')
+
+  body
+
+    article
+
+      section
+        h1 C# 6
+        p.small Mark Rendle | @markrendle<br>blog.markrendle.net | zudio.co
+        p &nbsp;
+        p.small (Imagine this is the #devsum15 template)
+
+      section
+        h2 History
+        ul.bullet
+          li C# 2 : Generics
+          li C# 3 : LINQ
+          li C# 4 : Dynamic
+          li C# 5 : Async
+
+      section
+        h1 The C# 6 Theme?
+
+      section(data-bespoke-backdrop='sugar')
+        h2 Syntactic Sugar
+
+      section
+        h2 Overview
+        ul.bullet
+          li Roslyn
+          li Strings
+          li Nulls
+          li Properties &amp; Methods
+          li Initializers
+          li Exceptions
+          li Static
+
+      section
+        h1 Roslyn
+
+      section
+        h2 Roslyn
+        ul.bullet
+          li Open-source
+            ul
+              li Apache 2.0
+              li github.com/dotnet/roslyn
+          li "Self-hosted"
+          li Language Services APIs
+
+      section
+        h1 Strings
+
+      section
+        h3 String.Format()
+
+      section
+        pre
+          code.language-csharp.
+            log.Error(string.Format("Exception: '{0}'", ex.Message));
+
+      section
+        h3 "String Interpolation"
+
+      section
+        pre
+          code.language-csharp.
+            log.Error($"Exception: '{ex.Message}'");
+
+      section
+        h3 "Magic Strings"
+
+      section
+        pre
+          code.language-csharp.
+            void Save(Drink drink)
+            {
+              if (drink == null)
+              {
+                throw new ArgumentNullException("drink");
+              }
+            }
+
+      section
+        h3 nameof(identifier)
+
+      section
+        pre
+          code.language-csharp.
+            void Save(Drink drink)
+            {
+              if (drink == null)
+              {
+                throw new ArgumentNullException(nameof(drink));
+              }
+            }
+
+      section
+        pre
+          code.language-csharp.
+            // Useful in reflection code, too:
+
+            typeof(Client).GetMethod(nameof(Client.Send));
+
+
+      section
+        h1 Nulls
+
+      section
+        pre
+          code.language-csharp.
+            var grenade = explosive as Grenade;
+            if (grenade != null)
+            {
+              grenade.RemovePin();
+            }
+            explosive.ThrowAtMime();
+
+      section
+        pre
+          code.language-csharp.
+            (explosive as Grenade)?.RemovePin();
+            explosive.ThrowAtMime();
+
+      section
+        pre
+          code.language-csharp.
+            protected void OnBlownUp(int pieces)
+            {
+              var handler = BlownUp;
+              if (handler != null)
+                {
+                  handler(this, new BlownUpEventArgs(pieces));
+                }
+            }
+
+      section
+        pre
+          code.language-csharp.
+            protected void OnBlownUp(int pieces)
+            {
+              BlownUp?.Invoke(this, new BlownUpEventArgs(pieces));
+            }
+
+      section
+        h1 Properties
+
+      section
+        h2 Automatic Properties
+        pre
+          code.language-csharp.
+            public bool IsAlive { get; set; }
+
+      section
+        pre
+          code.language-csharp.
+            public class Mime
+            {
+              public Mime()
+              {
+                IsAlive = true;
+              }
+
+              public bool IsAlive { get; set; }
+            }
+
+      section
+        pre
+          code.language-csharp.
+            // Automatic Property initializers
+            public class Mime
+            {
+              public bool IsAlive { get; set; } = true;
+            }
+
+      section
+        pre
+          code.language-csharp.
+            // Getter-only automatic properties
+            public class Mime
+            {
+              public bool IsAnnoying { get; } = true;
+            }
+
+      section
+        pre
+          code.language-csharp.
+            public class Mime
+            {
+              public bool IsAnnoying { get { return true; } }
+            }
+
+      section
+        pre
+          code.language-csharp.
+            // Set get-only properties in ctor
+            public class Juggler
+            {
+              public Juggler(int balls)
+              {
+                Balls = balls;
+              }
+
+              public int Balls { get; }
+            }
+
+      section
+        h2 Expression Bodied Properties
+
+      section
+        pre
+          code.language-csharp.
+            // Expression as get-only property
+            public class StiltWalker
+            {
+              public float TotalHeight =&gt; height + stilts.Height;
+            }
+
+      section
+        pre
+          code.language-csharp.
+            // Also works on indexer properties
+            public class Arsenal
+            {
+              public Weapon this[WeaponClass wc] =&gt; inventory.GetWeapon(wc);
+            }
+
+      section
+        h1 Methods
+
+      section
+        h2 Expression Bodied Methods
+
+      section
+        pre
+          code.language-csharp.
+            public int Explode(int power)
+            {
+              pieces = Math.Random(power);
+              return pieces;
+            }
+
+      section
+        pre
+          code.language-csharp.
+            // Single-line. Very F#.
+            public int Explode(int power) =&gt; this.pieces = Math.Random(power);
+
+      section
+        pre
+          code.language-csharp.
+            protected void OnBlownUp(int pieces) =&gt; BlownUp.Invoke(this, new BlownUpEventArgs(pieces));
+
+      section
+        pre
+          code.language-csharp.
+            // Use on operator overrides too
+            public static implicit operator PathString(string path) =&gt;
+              new PathString(path);
+
+      section
+        h1 Initializers
+
+      section
+        pre
+          code.language-csharp.
+            // Dictionary initializer in C# 5
+            var weapons = new Dictionary&lt;WeaponClass, Weapon&gt;
+              {
+                { WeaponClass.Pistol, new NerfGun() },
+                { WeaponClass.Melee, new PointyStick() }
+              };
+
+      section
+        pre
+          code.language-csharp.
+            // Actually compiles to
+            var weapons = new Dictionary&lt;WeaponClass, Weapon&gt;();
+            weapons.Add(WeaponClass.Pistol, new NerfGun());
+            weapons.Add(WeaponClass.Melee, new PointyStick());
+
+      section
+        pre
+          code.language-csharp.
+            // Meanwhile, in the Dictionary class
+            public class Dictionary&lt;TKey, TValue&lt; : IEnumerable
+            {
+              public void Add(TKey key, TValue value)
+              {
+                // Magic happens here
+              }
+            }
+
+      section
+        h2 Index Initializers
+
+      section
+        pre
+          code.language-csharp.
+            // Index initializer in C# 6
+            var weapons = new Dictionary&lt;WeaponClass, Weapon&gt;
+              {
+                [WeaponClass.Pistol] = new NerfGun(),
+                [WeaponClass.Melee] = new PointyStick()
+              };
+
+      section
+        pre
+          code.language-csharp.
+            // Actually compiles to
+            var weapons = new Dictionary&lt;WeaponClass, Weapon&gt;();
+            weapons[WeaponClass.Pistol] = new NerfGun();
+            weapons[WeaponClass.Melee] = new PointyStick();
+
+      section
+        h3 (BTW, collection initializers now work with Add extension methods)
+
+      section
+        h1 Static
+
+      section
+        pre
+          code.language-csharp.
+            using System;
+
+            public class Program
+            {
+              public static void Main()
+              {
+                Console.WriteLine("Hello, Neo...");
+              }
+            }
+
+      section
+        pre
+          code.language-csharp.
+            using static System.Console;
+
+            public class Program
+            {
+              public static void Main()
+              {
+                WriteLine("Hello, Neo...");
+              }
+            }
+
+      section
+        pre.small
+          code.language-csharp.
+            // More expressive libraries
+            using static BDD.Methods;
+
+            public class Program
+            {
+              public static void Main()
+              {
+                // Jasmine-style Describe/It
+                Describe("Life, The Universe &amp; Everything", () =gt; {
+                  It("should have a meaning", () =&gt; {
+                    Expect(6 * 9).ToEqual(42);
+                  });
+                });
+              }
+            }
+
+      section
+        h1 Exceptions
+
+      section
+        h2 Async/Await
+
+      section
+        pre.small
+          code.language-csharp.
+            try
+            {
+              await game.Loop();
+            }
+            catch (GameException ex)
+            {
+              await Log(ex);
+            }
+            finally
+            {
+              await VSync();
+            }
+
+      section
+        h2 Exception Filters
+
+      section
+        pre.small
+          code.language-csharp.
+            try
+            {
+              client.Send(request);
+            }
+            catch (HttpResponseException) when ex.StatusCode &gt; 499
+            {
+              throw;
+            }
+            catch (HttpResponseException)
+            {
+              retries = retries - 1;
+            }
+
+      section
+        h1 C# 7
+
+      section
+        h3 Top Five Features
+        ul
+          li Pattern matching
+          li Proper Tuples
+          li Records / algebraic data types
+          li Nullability tracking
+          li Async interators
+
+      section
+        h3 More C# 7
+        p.small https://github.com/dotnet/roslyn/issues/2136
+
+      section
+        h1 Fin
+
+
+    script(src='build/build.js')

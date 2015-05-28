@@ -1,0 +1,24 @@
+// New to Stylus? Check out http://learnboost.github.io/stylus
+// Use modern CSS thanks to Autoprefixer: https://github.com/ai/autoprefixer
+
+// Import CSS from "node_modules" and "bower_components"
+// thanks to Stylus' "import css" and "paths" options
+
+@import 'prism/themes/prism-okaidia.css'
+// Check out "bower_components/prism/themes/" for available themes
+
+.small
+  font-size 0.8em
+
+.sugar
+  background-image url('/images/sugar.jpg')
+
+li:before
+  content '\f1b2'
+  font-family FontAwesome
+
+pre.small
+  line-height: 1.2em important
+
+code[class*='language-csharp']
+  line-height: 1.2em important
